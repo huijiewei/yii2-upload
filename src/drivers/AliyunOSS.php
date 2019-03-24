@@ -76,7 +76,7 @@ class AliyunOSS extends BaseUpload
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
             'imageProcess' => '?x-oss-process=style/',
-            'responseParse' => new JsExpression('function (data) { return data.result.querySelector(\'PostResponse > Location\').textContent; }'),
+            'responseParse' => new JsExpression('function (result) { return result.querySelector(\'PostResponse > Location\').textContent; }'),
         ];
     }
 

@@ -50,7 +50,7 @@ class LocalFile extends BaseUpload
             'headers' => [],
             'dataType' => 'json',
             'paramName' => $this->paramName(),
-            'responseParse' => new JsExpression('function (data) { return data.result.url; }'),
+            'responseParse' => new JsExpression('function (result) { return result.url; }'),
         ];
     }
 

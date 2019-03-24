@@ -71,7 +71,7 @@
                 }
             })
             .bind('fileuploaddone', function (e, data) {
-                var url = options.responseParse(data);
+                var url = options.responseParse(data.result);
 
                 var filename = url.split('/').pop().split('#').shift().split('?').shift();
 

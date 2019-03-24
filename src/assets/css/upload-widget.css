@@ -1,0 +1,80 @@
+.upload-widget ul {
+    margin-bottom: 3px;
+}
+
+.upload-widget li {
+    margin-bottom: 6px;
+    margin-right: 10px;
+    position: relative;
+    display: block;
+}
+
+.upload-widget li .delete {
+    width: 12px;
+    height: 12px;
+    background: #f00;
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.upload-widget li .delete:before {
+    content: " ";
+    width: 9px;
+    height: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+}
+
+.upload-widget li.upload-widget-empty .delete {
+    display: none;
+}
+
+
+.upload-widget li .upload-widget-file {
+    padding: 9px;
+    border: 1px solid #cccccc;
+}
+
+.upload-widget li.upload-widget-empty .upload-widget-file {
+    font-family: 'Glyphicons Halflings';
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.upload-widget li.upload-widget-empty .upload-widget-file:before {
+    content: "\e022";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.upload-widget li .upload-widget-image {
+}
+
+.upload-widget li.upload-widget-empty .upload-widget-image {
+    font-family: 'Glyphicons Halflings';
+    background-color: #f7f7f7;
+    color: #cccccc;
+    font-size: 55px;
+}
+
+.upload-widget li.upload-widget-empty .upload-widget-image:before {
+    content: "\e060";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.upload-widget li img {
+    width: 100%;
+    height: 100%;
+}

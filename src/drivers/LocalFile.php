@@ -44,19 +44,13 @@ class LocalFile extends BaseUpload
 
         $policy = \Yii::$app->getSecurity()->encryptByKey($data, $this->policyKey);
 
-        $responseParse = <<<EOD
-function (result) {
-    return result.url;
-}
-EOD;
-
         return [
             'url' => Url::toRoute([$this->action, 'policy' => $policy]),
             'params' => [],
             'headers' => [],
             'dataType' => 'json',
             'paramName' => $this->paramName(),
-            'responseParse' => new JsExpression($responseParse),
+            'responseParse' => new JsExpression('function (data) { return data.result.url; }'),
         ];
     }
 

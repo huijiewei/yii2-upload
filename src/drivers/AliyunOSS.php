@@ -69,12 +69,6 @@ class AliyunOSS extends BaseUpload
             'success_action_status' => 201
         ];
 
-        $responseParse = <<<EOD
-function (result) {
-    return result.querySelector('PostResponse > Location').textContent;
-}
-EOD;
-
         return [
             'url' => $url,
             'params' => $params,
@@ -82,7 +76,7 @@ EOD;
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
             'imageProcess' => '?x-oss-process=style/',
-            'responseParse' => new JsExpression($responseParse),
+            'responseParse' => new JsExpression('function (data) { return data.result.querySelector(\'PostResponse > Location\').textContent; }'),
         ];
     }
 

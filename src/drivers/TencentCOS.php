@@ -11,6 +11,7 @@ namespace huijiewei\upload\drivers;
 use huijiewei\upload\BaseUpload;
 use yii\base\InvalidArgumentException;
 use yii\base\UnknownMethodException;
+use yii\web\JsExpression;
 
 class TencentCOS extends BaseUpload
 {
@@ -49,43 +50,46 @@ class TencentCOS extends BaseUpload
 
     public function build($fileSize, $fileTypes)
     {
-        $url = 'https://' . $this->bucket . '.cos.' . $this->region . '.myqcloud.com/';
+        $host = $this->bucket . '.cos.' . $this->region . '.myqcloud.com';
+
+        $url = 'https://' . $host . '/';
+
+        $httpString = strtolower('POST') .
+            "\n" . urldecode('/') .
+            "\n\n" . 'host=' . $host . "\n";
 
         $folder = rtrim($this->folder, '/') . '/' . date('Ym') . '/';
 
-        $policy = [
-            'expiration' => date('Y-m-d') . 'T' . date('H:i:s', time() + (60 * 20)) . 'Z',
-            'conditions' => [
-                ['content-length-range', 0, $fileSize],
-                ['starts-with', '$key', $folder]
-            ]
-        ];
-
-        $policy = json_encode($policy);
-
         $signTime = (string)(time() - 60) . ';' . (string)(time() + 60 * 20);
 
+        $httpString = sha1($httpString);
+
+        $signString = "sha1\n$signTime\n$httpString\n";
+
         $signKey = hash_hmac('sha1', $signTime, $this->secretKey);
-        $signString = hash_hmac('sha1', $policy, $signKey);
 
         $signature = hash_hmac('sha1', $signString, $signKey);
 
+        $authorization = 'q-sign-algorithm=sha1&q-ak='
+            . $this->secretId
+            . '&q-sign-time=' . $signTime . '&q-key-time=' . $signTime . '&q-header-list=host&q-url-param-list=&q-signature=' . $signature;
+
         $params = [
             'key' => $folder . '${filename}',
-            'policy' => $policy,
-            'success_action_status' => 200,
-            'q-sign-algorithm' => 'sha1',
-            'q-ak' => $this->secretId,
-            'q-key-time' => $signTime,
-            'q-signature' => $signature,
+            'success_action_status' => 201,
+            'Signature' => $authorization,
         ];
 
         return [
             'url' => $url,
             'params' => $params,
-            'headers' => [],
-            'fieldName' => $this->paramName(),
-            'responseKey' => 'key',
+            'headers' => [
+                'Authorization' => $authorization,
+            ],
+            'dataType' => 'xml',
+            'paramName' => $this->paramName(),
+            'imageProcess' => '',
+            'responseParse' => new JsExpression('function(data) { return data.result.querySelector(\'PostResponse > Location\').textContent; }'),
         ];
     }
 

@@ -50,7 +50,7 @@
 
         upload.fileupload(fileUploadOptions)
             .bind('fileuploadsubmit', function (e, data) {
-                var formData = fileUploadOptions.formData;
+                var formData = options.uploadFormData;
 
                 for (var k in formData) {
                     if (formData[k].toString().indexOf('${filename}') !== -1) {
@@ -63,8 +63,15 @@
 
                 button.addClass('disabled');
             })
+            .bind('fileuploadsend', function (e, data) {
+                var headers = options.uploadHeaders;
+
+                for (var h in headers) {
+                    data.headers[h] = headers[h];
+                }
+            })
             .bind('fileuploaddone', function (e, data) {
-                var url = options.responseParse(data.result);
+                var url = options.responseParse(data);
 
                 var filename = url.split('/').pop().split('#').shift().split('?').shift();
 
@@ -91,6 +98,7 @@
                 widgetItem.removeClass('upload-widget-empty');
             })
             .bind('fileuploadfail', function (e, data) {
+                console.log(data);
                 button.notify(data.errorThrown, 'error');
             })
             .bind('fileuploadalways', function () {

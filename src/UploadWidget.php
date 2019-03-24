@@ -63,9 +63,10 @@ class UploadWidget extends InputWidget
             'imageProcess' => (!empty($this->imageStyleName) && isset($uploadBuilds['imageProcess']) && !empty($uploadBuilds['imageProcess']))
                 ? ($uploadBuilds['imageProcess'] . $this->imageStyleName) : '',
             'responseParse' => $uploadBuilds['responseParse'],
+            'uploadHeaders' => $uploadBuilds['headers'],
+            'uploadFormData' => $uploadBuilds['params'],
             'fileUploadOptions' => [
                 'url' => $uploadBuilds['url'],
-                'formData' => $uploadBuilds['params'],
                 'dataType' => $uploadBuilds['dataType'],
                 'paramName' => $uploadBuilds['paramName'],
                 'singleFileUploads' => true,

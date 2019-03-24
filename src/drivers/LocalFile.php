@@ -42,7 +42,7 @@ class LocalFile extends BaseUpload
     {
         $data = Json::encode(['fs' => $fileSize, 'fts' => $fileTypes]);
 
-        $policy = \Yii::$app->getSecurity()->encryptByKey($data, $this->policyKey);
+        $policy = base64_encode(\Yii::$app->getSecurity()->encryptByKey($data, $this->policyKey));
 
         return [
             'url' => Url::toRoute([$this->action, 'policy' => $policy]),
@@ -61,7 +61,7 @@ class LocalFile extends BaseUpload
 
     public function upload($policy, $file, &$error)
     {
-        $policy = \Yii::$app->getSecurity()->decryptByKey($policy, $this->policyKey);
+        $policy = \Yii::$app->getSecurity()->decryptByKey(base64_decode($policy), $this->policyKey);
 
         $data = Json::decode($policy);
 

@@ -64,6 +64,19 @@ composer require huijiewei/yii2-upload
         'region' => '',
         'folder' => '',
     ],
+    
+    // 七牛
+    
+     'upload' => [
+        'class' => \huijiewei\upload\drivers\Qiniu::class,
+        'accessKey' => '',
+        'secretKey' => '',
+        'bucket' => '',
+        'folder' => '',
+        'uploadHost' => '',
+        'bucketHost' => '',
+        'bucketHttps' => false,
+    ],
 ```
 
 ### componentId 自定义
@@ -76,7 +89,7 @@ composer require huijiewei/yii2-upload
 该组件支持直传到第三方云存储，实际上就是模拟了表单上传的方式。从流程上来说相比于传统的先上传到服务器，再从服务器传到云存储来说，少了一步转发。从架构上来说，原来的上传都统一走网站服务器，上传量过大时，瓶颈在网站服务器，可能需要扩容网站服务器。采用表单上传后，上传都是直接从客户端发送到云存储。上传量过大时，压力都在云存储上，由云存储来保障服务质量。
 
 目前支持的第三方云储存：
-`本地(LocalFile)` `腾讯云(TencentCOS)` `阿里云(AliyunOSS)` 
+`本地(LocalFile)` `腾讯云(TencentCOS)` `阿里云(AliyunOSS)`  `七牛(Qiniu)` 
 > 其中的本地不算云存储，只是标识仍旧支持本地磁盘存储。
 
 

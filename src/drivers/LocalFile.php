@@ -139,7 +139,7 @@ class LocalFile extends BaseUpload
             return false;
         }
 
-        $fileName = md5_file($file->tempName) . '.' . $file->extension;
+        $fileName = substr(md5_file($file->tempName), -5) . '_' . $file->getBaseName() . '.' . $file->extension;
 
         $fileUrl = $fileUrl . '/' . $fileName;
         $filePath = $filePath . DIRECTORY_SEPARATOR . $fileName;

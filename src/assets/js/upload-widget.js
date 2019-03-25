@@ -52,19 +52,23 @@
             .bind('fileuploadsubmit', function (e, data) {
                 var formData = options.uploadFormData;
 
+                data.formData = data.formData == undefined ? {} : data.formData;
+
                 for (var k in formData) {
                     if (formData[k].toString().indexOf('${filename}') !== -1) {
                         var randomFileName = Math.random().toString(36).slice(-5) + '_' + data.files[0].name;
-                        formData[k] = formData[k].toString().replace('${filename}', randomFileName);
+                        data.formData[k] = formData[k].toString().replace('${filename}', randomFileName);
+                    } else {
+                        data.formData[k] = formData[k];
                     }
                 }
-
-                data.formData = formData;
 
                 button.addClass('disabled');
             })
             .bind('fileuploadsend', function (e, data) {
                 var headers = options.uploadHeaders;
+
+                data.headers = data.headers == undefined ? {} : data.headers;
 
                 for (var h in headers) {
                     data.headers[h] = headers[h];
@@ -77,7 +81,7 @@
 
                 var processUrl = url + options.imageProcess;
 
-                var widgetEmpty = widget.find('.upload-widget-empty');
+                var widgetEmpty = widget.find('li:last');
                 var widgetItem = null;
 
                 if (options.multiple) {
@@ -89,7 +93,7 @@
                 }
 
                 if (options.preview) {
-                    widgetItem.find('.upload-widget-item').html('<img src="' + processUrl + '">')
+                    widgetItem.find('.upload-widget-item').empty().html('<img src="' + processUrl + '">')
                 } else {
                     widgetItem.find('.upload-widget-item').html(filename)
                 }

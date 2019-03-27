@@ -54,6 +54,7 @@ class UploadWidget extends InputWidget
             'multiple' => $this->multiple,
             'inputName' => $this->name,
             'deleteLabel' => $this->deleteLabel,
+            'filenameHash' => 'random', // random/original
             'maxFileSize' => $this->fileSize,
             'maxFileSizeMessage' => $this->fileSizeMessage . ' ' . round($this->fileSize / 1024, 0) . ' Kb',
             'acceptFileTypes' => !empty($fileTypes) ?

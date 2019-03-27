@@ -20,6 +20,7 @@ class LocalFile extends BaseUpload
     public $path;
     public $action = 'site/upload';
     public $policyKey = 'YII2';
+    public $filenameHash = 'random'; //random/md5_file/original
 
     public function init()
     {
@@ -139,7 +140,20 @@ class LocalFile extends BaseUpload
             return false;
         }
 
-        $fileName = substr(md5_file($file->tempName), -5) . '_' . $file->getBaseName() . '.' . $file->extension;
+        switch ($this->filenameHash) {
+            case 'md5_file':
+                $fileNameHash = md5_file($file->tempName);
+                break;
+            case 'original':
+                $fileNameHash = substr(md5_file($file->tempName), -8) . '_' . $file->getBaseName();
+                break;
+            case 'random':
+            default:
+                $fileNameHash = \Yii::$app->getSecurity()->generateRandomString();
+                break;
+        }
+
+        $fileName = $fileNameHash . '.' . $file->extension;
 
         $fileUrl = $fileUrl . '/' . $fileName;
         $filePath = $filePath . DIRECTORY_SEPARATOR . $fileName;

@@ -56,7 +56,14 @@
 
                 for (var k in formData) {
                     if (formData[k].toString().indexOf('${filename}') !== -1) {
-                        var randomFileName = Math.random().toString(36).slice(-5) + '_' + data.files[0].name;
+                        var randomFileName = '';
+
+                        if (options.filenameHash == 'original') {
+                            randomFileName = Math.random().toString(36).slice(-8) + '_' + data.files[0].name;
+                        } else {
+                            randomFileName = Math.random().toString(36).substring(2, 16) + '_' + Math.random().toString(36).substring(2, 16) + '.' + data.files[0].name.split('.').pop();
+                        }
+
                         data.formData[k] = formData[k].toString().replace('${filename}', randomFileName);
                     } else {
                         data.formData[k] = formData[k];

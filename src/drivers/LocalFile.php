@@ -50,6 +50,7 @@ class LocalFile extends BaseUpload
             'headers' => [],
             'dataType' => 'json',
             'paramName' => $this->paramName(),
+            'imageProcess' => '',
             'responseParse' => 'return result.url;',
         ];
     }

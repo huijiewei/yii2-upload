@@ -45,7 +45,7 @@ class LocalFile extends BaseUpload
         $policy = base64_encode(\Yii::$app->getSecurity()->encryptByKey($data, $this->policyKey));
 
         return [
-            'url' => Url::toRoute([$this->action, 'policy' => $policy]),
+            'url' => Url::toRoute([$this->action, 'policy' => $policy], true),
             'params' => [],
             'headers' => [],
             'dataType' => 'json',

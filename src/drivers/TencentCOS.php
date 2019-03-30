@@ -88,7 +88,7 @@ class TencentCOS extends BaseUpload
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
             'imageProcess' => '',
-            'responseParse' => 'function(result) { return result.querySelector(\'PostResponse > Location\').textContent; }',
+            'responseParse' => 'return result.querySelector(\'PostResponse > Location\').textContent;',
         ];
     }
 

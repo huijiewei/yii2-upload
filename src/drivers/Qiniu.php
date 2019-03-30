@@ -80,7 +80,7 @@ class Qiniu extends BaseUpload
             'dataType' => 'json',
             'paramName' => $this->paramName(),
             'imageProcess' => '-',
-            'responseParse' => 'function (result) { return result.url; }',
+            'responseParse' => 'return result.url;',
         ];
     }
 

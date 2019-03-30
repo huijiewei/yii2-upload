@@ -63,7 +63,7 @@ class UploadWidget extends InputWidget
             'acceptFileTypesMessage' => $this->fileTypesMessage . ' ' . implode(',', $fileTypes),
             'imageProcess' => (!empty($this->imageStyleName) && isset($uploadBuilds['imageProcess']) && !empty($uploadBuilds['imageProcess']))
                 ? ($uploadBuilds['imageProcess'] . $this->imageStyleName) : '',
-            'responseParse' => $uploadBuilds['responseParse'],
+            'responseParse' => new JsExpression($uploadBuilds['responseParse']),
             'uploadHeaders' => $uploadBuilds['headers'],
             'uploadFormData' => $uploadBuilds['params'],
             'fileUploadOptions' => [

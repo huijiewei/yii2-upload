@@ -11,7 +11,6 @@ namespace huijiewei\upload\drivers;
 use huijiewei\upload\BaseUpload;
 use yii\base\InvalidArgumentException;
 use yii\base\UnknownMethodException;
-use yii\web\JsExpression;
 
 class TencentCOS extends BaseUpload
 {
@@ -89,7 +88,7 @@ class TencentCOS extends BaseUpload
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
             'imageProcess' => '',
-            'responseParse' => new JsExpression('function(result) { return result.querySelector(\'PostResponse > Location\').textContent; }'),
+            'responseParse' => 'function(result) { return result.querySelector(\'PostResponse > Location\').textContent; }',
         ];
     }
 

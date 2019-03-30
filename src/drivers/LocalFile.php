@@ -13,7 +13,6 @@ use yii\base\InvalidArgumentException;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
-use yii\web\JsExpression;
 
 class LocalFile extends BaseUpload
 {
@@ -51,7 +50,7 @@ class LocalFile extends BaseUpload
             'headers' => [],
             'dataType' => 'json',
             'paramName' => $this->paramName(),
-            'responseParse' => new JsExpression('function (result) { return result.url; }'),
+            'responseParse' => 'function (result) { return result.url; }',
         ];
     }
 

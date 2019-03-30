@@ -12,7 +12,6 @@ use huijiewei\upload\BaseUpload;
 use yii\base\InvalidArgumentException;
 use yii\base\UnknownMethodException;
 use yii\helpers\Json;
-use yii\web\JsExpression;
 
 class Qiniu extends BaseUpload
 {
@@ -81,7 +80,7 @@ class Qiniu extends BaseUpload
             'dataType' => 'json',
             'paramName' => $this->paramName(),
             'imageProcess' => '-',
-            'responseParse' => new JsExpression('function (result) { return result.url; }'),
+            'responseParse' => 'function (result) { return result.url; }',
         ];
     }
 

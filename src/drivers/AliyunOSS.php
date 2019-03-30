@@ -11,7 +11,6 @@ namespace huijiewei\upload\drivers;
 use huijiewei\upload\BaseUpload;
 use yii\base\InvalidArgumentException;
 use yii\base\UnknownMethodException;
-use yii\web\JsExpression;
 
 class AliyunOSS extends BaseUpload
 {
@@ -76,7 +75,7 @@ class AliyunOSS extends BaseUpload
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
             'imageProcess' => '?x-oss-process=style/',
-            'responseParse' => new JsExpression('function (result) { return result.querySelector(\'PostResponse > Location\').textContent; }'),
+            'responseParse' => 'function (result) { return result.querySelector(\'PostResponse > Location\').textContent; }',
         ];
     }
 

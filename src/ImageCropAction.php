@@ -23,7 +23,8 @@ class ImageCropAction extends Action
             \Yii::$app->getRequest()->get('y'),
             \Yii::$app->getRequest()->get('w'),
             \Yii::$app->getRequest()->get('h'),
-            $error);
+            $error
+        );
 
         if (!$result) {
             throw new ForbiddenHttpException($error);

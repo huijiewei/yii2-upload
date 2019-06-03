@@ -18,7 +18,8 @@ composer require huijiewei/yii2-upload
     'upload' => [
         'class' => \huijiewei\upload\drivers\LocalFile::class,
         'path' => '文件上传的目录',
-        'action' => 'site/upload'
+        'action' => 'site/upload',
+        'cropAction' => 'site/image-crop'
     ],
     
     // 根据上面的 action 配置，在对应的控制器里面增加
@@ -28,6 +29,9 @@ composer require huijiewei/yii2-upload
         return [
             'upload' => [
                 'class' => \huijiewei\upload\UploadAction::class,
+            ],
+            'image-crop' => [
+                'class' => \huijiewei\upload\ImageCropAction::class,
             ]
         ];
     }

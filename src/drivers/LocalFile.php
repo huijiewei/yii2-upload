@@ -9,17 +9,22 @@
 namespace huijiewei\upload\drivers;
 
 use huijiewei\upload\BaseUpload;
+use Imagine\Image\Box;
+use Imagine\Image\Point;
 use yii\base\InvalidArgumentException;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\imagine\Image;
 
 class LocalFile extends BaseUpload
 {
     public $path;
     public $action = 'site/upload';
+    public $cropAction = 'site/image-crop';
     public $policyKey = 'YII2';
     public $filenameHash = 'random'; //random/md5_file/original
+    public $supportImageCrop = true;
 
     public function init()
     {
@@ -40,12 +45,13 @@ class LocalFile extends BaseUpload
 
     public function build($fileSize, $fileTypes)
     {
-        $data = Json::encode(['fs' => $fileSize, 'fts' => $fileTypes]);
+        $data = Json::encode(['fs' => $fileSize, 'fts' => $fileTypes, 'ic' => $this->supportImageCrop]);
 
         $policy = base64_encode(\Yii::$app->getSecurity()->encryptByKey($data, $this->policyKey));
 
         return [
             'url' => Url::toRoute([$this->action, 'policy' => $policy], true),
+            'cropUrl' => Url::toRoute([$this->cropAction, 'policy' => $policy], true),
             'params' => [],
             'headers' => [],
             'dataType' => 'json',
@@ -105,11 +111,8 @@ class LocalFile extends BaseUpload
             return false;
         }
 
-        $fileUrl = \Yii::getAlias('@web');
-        $filePath = \Yii::getAlias('@webroot');
-
-        $fileUrl = $fileUrl . '/' . $this->path;
-        $filePath = $filePath . DIRECTORY_SEPARATOR . $this->path;
+        $fileUrl = \Yii::getAlias('@web/' . ltrim($this->path, '/'));
+        $filePath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($this->path, '/'));
 
         if (!file_exists($filePath)) {
             unlink($file->tempName);
@@ -189,5 +192,91 @@ class LocalFile extends BaseUpload
             default:
                 return '未知错误';
         }
+    }
+
+    public function imageCrop($policy, $file, $size, $x, $y, $w, $h, &$error)
+    {
+        $policy = \Yii::$app->getSecurity()->decryptByKey(base64_decode($policy), $this->policyKey);
+
+        $data = Json::decode($policy);
+
+        if (!isset($data['ic'])) {
+            $error = '无法切割图片';
+
+            return false;
+        }
+
+        $fileUrl = \Yii::getAlias('@web/' . ltrim($this->path, '/'));
+        $filePath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($this->path, '/'));
+
+        $fileRealPath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($file, '/'));
+
+        if (!file_exists($fileRealPath)) {
+            $error = '要切割的图片文件不存在';
+
+            return false;
+        }
+
+        $monthPath = 'm' . date('Ym', strtotime('now'));
+
+        $fileUrl = $fileUrl . '/' . $monthPath;
+        $filePath = $filePath . DIRECTORY_SEPARATOR . $monthPath;
+
+        if (!FileHelper::createDirectory($filePath, 0755, true)) {
+            unlink($file->tempName);
+
+            $error = '文件上传失败，服务器创建目录出现错误';
+
+            return false;
+        }
+
+        switch ($this->filenameHash) {
+            case 'md5_file':
+                $fileNameHash = md5_file($file->tempName);
+                break;
+            case 'original':
+                $fileNameHash = substr(md5_file($file->tempName), -8) . '_' . $file->getBaseName();
+                break;
+            case 'random':
+            default:
+                $fileNameHash = \Yii::$app->getSecurity()->generateRandomString();
+                break;
+        }
+
+        $fileName = pathinfo($file, PATHINFO_FILENAME);
+        $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+
+        $cropTemp = FileHelper::normalizePath(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'crop_' . $fileName . '.' . $fileExtension);
+
+        if ($cropTemp == false) {
+            $error = '创建临时文件出错';
+
+            return false;
+        }
+
+        $image = Image::getImagine()->open($fileRealPath);
+
+        $image->crop(new Point($x, $y), new Box($w, $h));
+
+        if ($size) {
+            $image->resize(new Box($size[0] * 2, $size[1] * 2));
+        }
+
+        $image->save($cropTemp);
+
+        $cropFileName = $fileNameHash . '.' . $fileExtension;
+
+        $cropFileUrl = $fileUrl . '/' . $cropFileName;
+        $cropRealPath = $filePath = $filePath . DIRECTORY_SEPARATOR . $cropFileName;
+
+        if (!rename($cropTemp, $cropRealPath)) {
+            $error = '文件保存失败，服务器发生了未知的错误';
+
+            return false;
+        }
+
+        return [
+            'url' => $cropFileUrl,
+        ];
     }
 }

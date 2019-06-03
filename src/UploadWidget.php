@@ -34,6 +34,8 @@ class UploadWidget extends InputWidget
 
     public $imageStyleName = '';
 
+    public $cropImage = false;
+
     /* @var $uploadDriver BaseUpload */
     public $uploadDriver = 'upload';
 
@@ -44,6 +46,10 @@ class UploadWidget extends InputWidget
         $this->initializeUploadDriver();
 
         UploadAsset::register($this->getView());
+
+        if ($this->enableImageCrop()) {
+            ImageCropAsset::register($this->getView());
+        }
 
         $fileTypes = is_string($this->fileTypes) ? explode(',', $this->fileTypes) : $this->fileTypes;
 
@@ -66,6 +72,7 @@ class UploadWidget extends InputWidget
             'responseParse' => new JsExpression('function (result) { ' . $uploadBuilds['responseParse'] . '}'),
             'uploadHeaders' => $uploadBuilds['headers'],
             'uploadFormData' => $uploadBuilds['params'],
+            'cropImageOptions' => $this->enableImageCrop() ? array_merge($this->cropImage, ['url' => $uploadBuilds['cropUrl']]) : false,
             'fileUploadOptions' => [
                 'url' => $uploadBuilds['url'],
                 'dataType' => $uploadBuilds['dataType'],
@@ -82,6 +89,11 @@ class UploadWidget extends InputWidget
         if (is_string($this->uploadDriver)) {
             $this->uploadDriver = \Yii::$app->get($this->uploadDriver);
         }
+    }
+
+    public function enableImageCrop()
+    {
+        return $this->cropImage && $this->uploadDriver->supportImageCrop;
     }
 
     public function registerScript()

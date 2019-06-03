@@ -13,6 +13,15 @@ use yii\web\UploadedFile;
 
 abstract class BaseUpload extends Component
 {
+    public $supportImageCrop = false;
+
+    public function imageCrop($policy, $file, $size, $x, $y, $w, $h, &$error)
+    {
+        $error = '本上传驱动不支持图片切割';
+
+        return false;
+    }
+
     /**
      * @param $fileSize integer
      * @param $fileTypes array

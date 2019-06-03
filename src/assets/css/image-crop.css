@@ -1,0 +1,12 @@
+#crop-image-modal .modal-body {
+  text-align: center;
+}
+
+#crop-image-modal .modal-footer {
+  text-align: center;
+}
+
+#modal-crop-image-box {
+  margin: 0 auto;
+  text-align: center;
+}

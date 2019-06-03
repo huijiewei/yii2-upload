@@ -34,10 +34,44 @@ composer require huijiewei/yii2-upload
     
     // 使用 widgets 命名空间下的 widget
     
-    <?= \huijiewei\upload\widgets\ImageUploadWidget::widget([
+    \huijiewei\upload\widgets\FileUploadWidget::widget([
+        'name' => 'file',
+        'value' => '',
+    ]);
+    
+    \huijiewei\upload\widgets\ImageUploadWidget::widget([
         'name' => 'image',
         'value' => '',
-    ]) ?>
+    ]);
+    
+    
+    // 支持多文件
+    
+    \huijiewei\upload\widgets\FileUploadWidget::widget([
+        'name' => 'files[]',
+        'value' => [],
+        'multiple' => true
+    ]);
+    
+    // 云存储支持图片样式
+    
+    \huijiewei\upload\widgets\ImageUploadWidget::widget([
+        'name' => 'image',
+        'value' => '',
+        'imageStyleName' => 'imageStyle1'
+    ]);
+
+
+    // 本地存储支持图片切割功能
+   
+    \huijiewei\upload\widgets\ImageUploadWidget::widget([
+        'name' => 'image',
+        'value' => '',
+        'cropImage' => [
+            'ratio' => 1,
+            'size' => [100,100]
+        ] 
+    ]);
 ```
 
 ### 云存储

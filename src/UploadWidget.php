@@ -34,6 +34,7 @@ class UploadWidget extends InputWidget
 
     public $imageStyleName = '';
 
+    /* @var $cropImage boolean|array */
     public $cropImage = false;
 
     /* @var $uploadDriver BaseUpload */
@@ -67,12 +68,16 @@ class UploadWidget extends InputWidget
                 new JsExpression('/(\.|\/)(' . implode('|', $fileTypes) . ')$/i') :
                 null,
             'acceptFileTypesMessage' => $this->fileTypesMessage . ' ' . implode(',', $fileTypes),
-            'imageProcess' => (!empty($this->imageStyleName) && isset($uploadBuilds['imageProcess']) && !empty($uploadBuilds['imageProcess']))
+            'imageProcess' => (!empty($this->imageStyleName) &&
+                isset($uploadBuilds['imageProcess']) &&
+                !empty($uploadBuilds['imageProcess']))
                 ? ($uploadBuilds['imageProcess'] . $this->imageStyleName) : '',
             'responseParse' => new JsExpression('function (result) { ' . $uploadBuilds['responseParse'] . '}'),
             'uploadHeaders' => $uploadBuilds['headers'],
             'uploadFormData' => $uploadBuilds['params'],
-            'cropImageOptions' => $this->enableImageCrop() ? array_merge($this->cropImage, ['url' => $uploadBuilds['cropUrl']]) : false,
+            'cropImageOptions' => $this->enableImageCrop() ?
+                array_merge($this->cropImage, ['url' => $uploadBuilds['cropUrl']]) :
+                false,
             'fileUploadOptions' => [
                 'url' => $uploadBuilds['url'],
                 'dataType' => $uploadBuilds['dataType'],
@@ -120,7 +125,8 @@ class UploadWidget extends InputWidget
 
         foreach ($current as $item) {
             $html .= '<li class="pull-left' . (empty($item) ? ' upload-widget-empty' : '') . '">';
-            $html .= '<div class="upload-widget-item ' . ($this->preview ? 'upload-widget-image' : 'upload-widget-file') . '"';
+            $html .= '<div class="upload-widget-item '
+                . ($this->preview ? 'upload-widget-image' : 'upload-widget-file') . '"';
 
             if ($this->preview) {
                 $html .= ' style="width: ' . $this->preview[0] . 'px; height: ' . $this->preview[1] . 'px;"';

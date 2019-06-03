@@ -43,7 +43,11 @@ class UploadAction extends Action
             throw new MethodNotAllowedHttpException('访问被拒绝');
         }
 
-        $result = $this->uploadDriver->upload($policy, UploadedFile::getInstanceByName($this->uploadDriver->paramName()), $error);
+        $result = $this->uploadDriver->upload(
+            $policy,
+            UploadedFile::getInstanceByName($this->uploadDriver->paramName()),
+            $error
+        );
 
         if (!$result) {
             throw new ForbiddenHttpException($error);

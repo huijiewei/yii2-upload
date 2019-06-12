@@ -118,7 +118,6 @@
         }
       })
       .bind('fileuploadfail', function (e, data) {
-        console.log(data);
         button.notify(data.errorThrown, 'error');
       })
       .bind('fileuploadalways', function () {

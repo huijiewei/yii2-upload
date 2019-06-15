@@ -112,7 +112,7 @@ class LocalFile extends BaseUpload
         }
 
         $fileUrl = \Yii::getAlias('@web/' . ltrim($this->path, '/'));
-        $filePath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($this->path, '/'));
+        $filePath = \Yii::getAlias('@webroot/' . ltrim($this->path, '/'));
 
         if (!file_exists($filePath)) {
             unlink($file->tempName);
@@ -207,9 +207,9 @@ class LocalFile extends BaseUpload
         }
 
         $fileUrl = \Yii::getAlias('@web/' . ltrim($this->path, '/'));
-        $filePath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($this->path, '/'));
+        $filePath = \Yii::getAlias('@webroot/' . ltrim($this->path, '/'));
 
-        $fileRealPath = \Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . ltrim($file, '/'));
+        $fileRealPath = \Yii::getAlias('@webroot/' . ltrim($file, '/'));
 
         if (!file_exists($fileRealPath)) {
             $error = '要切割的图片文件不存在';

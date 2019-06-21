@@ -35,6 +35,7 @@
           $("#modal-crop-image-w").val(event.detail.width);
           $("#modal-crop-image-h").val(event.detail.height);
         },
+        viewMode: 2,
         aspectRatio: options.ratio,
         zoomable: false,
         rotatable: false,

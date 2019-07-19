@@ -19,6 +19,6 @@ class ImageCropAsset extends AssetBundle
     ];
     public $depends = [
         BootstrapAsset::class,
-        JqueryCropperAsset::class,
+        CorpperjsAsset::class,
     ];
 }

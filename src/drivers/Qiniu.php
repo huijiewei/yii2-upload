@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huijiewei
- * Date: 2019-03-25
- * Time: 10:17
- */
 
 namespace huijiewei\upload\drivers;
 
@@ -19,6 +13,8 @@ class Qiniu extends BaseUpload
     public $secretKey;
     public $bucket;
     public $folder = '';
+    public $styleDelimiter = '-';
+
     public $uploadHost = 'upload.qiniup.com';
     public $bucketHost = '';
     public $bucketHttps = false;
@@ -44,7 +40,12 @@ class Qiniu extends BaseUpload
         }
     }
 
-    public function build($fileSize, $fileTypes)
+    public function upload($policy, $file, &$error)
+    {
+        throw new UnknownMethodException('方法未实现');
+    }
+
+    protected function option($identity, $size, $types, $thumbs, $cropper)
     {
         $url = 'https://' . $this->uploadHost;
 
@@ -56,7 +57,7 @@ class Qiniu extends BaseUpload
             'scope' => $this->bucket . ':' . $folder,
             'isPrefixalScope' => 1,
             'deadline' => $deadline,
-            'fsizeLimit' => $fileSize,
+            'fsizeLimit' => $size,
             'returnBody' => Json::encode([
                 'key' => '$(key)',
                 'url' => ($this->bucketHttps ? 'https' : 'http') . '://' . rtrim($this->bucketHost, '/') . '/$(key)',
@@ -69,9 +70,31 @@ class Qiniu extends BaseUpload
         $signature = $this->urlSafeBase64Encode(hash_hmac('sha1', $policy, $this->secretKey, true));
 
         $params = [
-            'key' => $folder . '${filename}',
+            'key' => $folder . $identity . '_${filename}',
             'token' => $this->accessKey . ':' . $signature . ':' . $policy,
         ];
+
+        $responseParse = 'var url = result.url;';
+
+        $thumbSizes = $this->buildThumbSizes($thumbs);
+
+        if (empty($thumbSizes)) {
+            $responseParse .= 'var thumbs = null;';
+        } else {
+            $responseParse .= 'var thumbs = [];';
+
+            $styleDelimiter = empty($this->styleDelimiter) ? '-' : $this->styleDelimiter;
+
+            foreach ($thumbSizes as $thumbSize) {
+                $responseParse .= 'thumbs.push({ thumb: "'
+                    . $thumbSize['name']
+                    . '", url: url + "'
+                    . $styleDelimiter
+                    . $thumbSize['name'] . '"});';
+            }
+        }
+
+        $responseParse .= 'return { original: url, thumbs: thumbs };';
 
         return [
             'url' => $url,
@@ -79,8 +102,7 @@ class Qiniu extends BaseUpload
             'headers' => [],
             'dataType' => 'json',
             'paramName' => $this->paramName(),
-            'imageProcess' => '-',
-            'responseParse' => 'return result.url;',
+            'responseParse' => $responseParse,
         ];
     }
 
@@ -92,10 +114,5 @@ class Qiniu extends BaseUpload
     public function paramName()
     {
         return 'file';
-    }
-
-    public function upload($policy, $file, &$error)
-    {
-        throw new UnknownMethodException('方法未实现');
     }
 }

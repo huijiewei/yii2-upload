@@ -11,18 +11,17 @@ class ImageCropAction extends Action
     /* @var $uploadDriver BaseUpload */
     public $uploadDriver = 'upload';
 
-    public function run($policy, $file)
+    public function run($policy)
     {
         \Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
-        $result = $this->uploadDriver->imageCrop(
+        $result = $this->uploadDriver->crop(
             $policy,
-            $file,
-            \Yii::$app->getRequest()->get('size'),
-            \Yii::$app->getRequest()->get('x'),
-            \Yii::$app->getRequest()->get('y'),
-            \Yii::$app->getRequest()->get('w'),
-            \Yii::$app->getRequest()->get('h'),
+            \Yii::$app->getRequest()->post('file', ''),
+            \Yii::$app->getRequest()->post('x'),
+            \Yii::$app->getRequest()->post('y'),
+            \Yii::$app->getRequest()->post('w'),
+            \Yii::$app->getRequest()->post('h'),
             $error
         );
 

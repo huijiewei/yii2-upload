@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huijiewei
- * Date: 2019-03-24
- * Time: 15:10
- */
 
 namespace huijiewei\upload\widgets;
 

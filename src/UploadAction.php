@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huijiewei
- * Date: 2019-03-24
- * Time: 14:57
- */
 
 namespace huijiewei\upload;
 

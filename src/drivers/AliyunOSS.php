@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huijiewei
- * Date: 2019-03-23
- * Time: 16:40
- */
 
 namespace huijiewei\upload\drivers;
 
@@ -20,6 +14,7 @@ class AliyunOSS extends BaseUpload
     public $endpoint;
     public $bucket;
     public $folder = '';
+    public $styleDelimiter = '';
 
     public function init()
     {
@@ -42,17 +37,22 @@ class AliyunOSS extends BaseUpload
         }
     }
 
-    public function build($fileSize, $fileTypes)
+    public function upload($policy, $file, &$error)
+    {
+        throw new UnknownMethodException('方法未实现');
+    }
+
+    protected function option($identity, $size, $types, $thumbs, $cropper)
     {
         $url = 'https://' . $this->bucket . '.' . $this->endpoint;
 
-        $folder = rtrim($this->folder, '/') . '/' . date('Ym') . '/';
+        $directory = rtrim($this->folder, '/') . '/' . date('Ym') . '/';
 
         $policy = [
             'expiration' => date('Y-m-d') . 'T' . date('H:i:s', time() + (60 * 20)) . 'Z',
             'conditions' => [
-                ['content-length-range', 0, $fileSize],
-                ['starts-with', '$key', $folder]
+                ['content-length-range', 0, $size],
+                ['starts-with', '$key', $directory]
             ]
         ];
 
@@ -62,30 +62,47 @@ class AliyunOSS extends BaseUpload
 
         $params = [
             'OSSAccessKeyId' => $this->accessKeyId,
-            'key' => $folder . '${filename}',
+            'key' => $directory . $identity . '_${filename}',
             'policy' => $policy,
             'signature' => $signature,
             'success_action_status' => 201
         ];
 
+        $responseParse = 'var url = result.querySelector(\'PostResponse > Location\').textContent;';
+
+        $thumbSizes = $this->buildThumbSizes($thumbs);
+
+        if (empty($thumbSizes)) {
+            $responseParse .= 'var thumbs = null;';
+        } else {
+            $responseParse .= 'var thumbs = [];';
+
+            $styleDelimiter = empty($this->styleDelimiter) ? '?x-oss-process=style/' : $this->styleDelimiter;
+
+            foreach ($thumbSizes as $thumbSize) {
+                $responseParse .= 'thumbs.push({ thumb: "'
+                    . $thumbSize['name']
+                    . '", url: url + "'
+                    . $styleDelimiter
+                    . $thumbSize['name'] . '"});';
+            }
+        }
+
+        $responseParse .= 'return { original: url, thumbs: thumbs };';
+
         return [
             'url' => $url,
             'params' => $params,
             'headers' => [],
+            'timeout' => 9 * 60,
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
-            'imageProcess' => '?x-oss-process=style/',
-            'responseParse' => 'return result.querySelector(\'PostResponse > Location\').textContent;',
+            'responseParse' => $responseParse,
         ];
     }
 
     public function paramName()
     {
         return 'file';
-    }
-
-    public function upload($policy, $file, &$error)
-    {
-        throw new UnknownMethodException('方法未实现');
     }
 }

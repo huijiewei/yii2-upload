@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huijiewei
- * Date: 2019-03-23
- * Time: 17:56
- */
 
 namespace huijiewei\upload\drivers;
 
@@ -21,6 +15,7 @@ class TencentCOS extends BaseUpload
     public $bucket;
     public $region;
     public $folder = '';
+    public $styleDelimiter = '!';
 
     public function init()
     {
@@ -47,7 +42,12 @@ class TencentCOS extends BaseUpload
         }
     }
 
-    public function build($fileSize, $fileTypes)
+    public function upload($policy, $file, &$error)
+    {
+        throw new UnknownMethodException('方法未实现');
+    }
+
+    protected function option($identity, $size, $types, $thumbs, $cropper)
     {
         $host = $this->bucket . '.cos.' . $this->region . '.myqcloud.com';
 
@@ -71,13 +71,38 @@ class TencentCOS extends BaseUpload
 
         $authorization = 'q-sign-algorithm=sha1&q-ak='
             . $this->secretId
-            . '&q-sign-time=' . $signTime . '&q-key-time=' . $signTime . '&q-header-list=host&q-url-param-list=&q-signature=' . $signature;
+            . '&q-sign-time='
+            . $signTime . '&q-key-time='
+            . $signTime . '&q-header-list=host&q-url-param-list=&q-signature='
+            . $signature;
 
         $params = [
-            'key' => $folder . '${filename}',
+            'key' => $folder . $identity . '_${filename}',
             'success_action_status' => 201,
             'Signature' => $authorization,
         ];
+
+        $responseParse = 'var url = result.querySelector(\'PostResponse > Location\').textContent;';
+
+        $thumbSizes = $this->buildThumbSizes($thumbs);
+
+        if (empty($thumbSizes)) {
+            $responseParse .= 'var thumbs = null;';
+        } else {
+            $responseParse .= 'var thumbs = [];';
+
+            $styleDelimiter = empty($this->styleDelimiter) ? '!' : $this->styleDelimiter;
+
+            foreach ($thumbSizes as $thumbSize) {
+                $responseParse .= 'thumbs.push({ thumb: "'
+                    . $thumbSize['name']
+                    . '", url: url + "'
+                    . $styleDelimiter
+                    . $thumbSize['name'] . '"});';
+            }
+        }
+
+        $responseParse .= 'return { original: url, thumbs: thumbs };';
 
         return [
             'url' => $url,
@@ -87,18 +112,12 @@ class TencentCOS extends BaseUpload
             ],
             'dataType' => 'xml',
             'paramName' => $this->paramName(),
-            'imageProcess' => '',
-            'responseParse' => 'return result.querySelector(\'PostResponse > Location\').textContent;',
+            'responseParse' => $responseParse,
         ];
     }
 
     public function paramName()
     {
         return 'file';
-    }
-
-    public function upload($policy, $file, &$error)
-    {
-        throw new UnknownMethodException('方法未实现');
     }
 }

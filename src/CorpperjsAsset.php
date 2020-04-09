@@ -1,6 +1,5 @@
 <?php
 
-
 namespace huijiewei\upload;
 
 use yii\web\AssetBundle;

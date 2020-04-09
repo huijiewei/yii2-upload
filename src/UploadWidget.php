@@ -10,6 +10,8 @@ use yii\widgets\InputWidget;
 
 class UploadWidget extends InputWidget
 {
+    public $identity = '';
+
     public $label = '上传文件';
     public $deleteLabel = '删除';
 
@@ -48,7 +50,7 @@ class UploadWidget extends InputWidget
 
         $fileTypes = is_string($this->fileTypes) ? explode(',', $this->fileTypes) : $this->fileTypes;
 
-        $uploadBuilds = $this->uploadDriver->build($this->fileSize, $this->fileTypes);
+        $uploadBuilds = $this->uploadDriver->build($this->identity, $this->fileSize, $this->fileTypes, null, $this->cropImage ? true : false);
 
         $this->clientOptions = ArrayHelper::merge([
             'preview' => $this->preview ? true : false,

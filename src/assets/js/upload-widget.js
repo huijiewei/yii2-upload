@@ -106,11 +106,11 @@
         }
       })
       .bind('fileuploaddone', function (e, data) {
-        var url = options.responseParse(data.result);
+        var url = options.responseParse(data.result).original;
 
         if (options.cropImageOptions) {
           $.imageCrop(url, options.cropImageOptions, function (req) {
-            addItem(req.url, options.preview, widget, options.inputName)
+            addItem(req.original, options.preview, widget, options.inputName)
           });
         } else {
           url += options.imageProcess;

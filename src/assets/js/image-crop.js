@@ -7,6 +7,7 @@
         $modal.find('.btn-primary').on('click', function () {
             $.ajax({
                 url: options.url,
+                method: 'POST',
                 data: {
                     file: file,
                     x: parseInt($("#modal-crop-image-x").val()),

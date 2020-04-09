@@ -18,19 +18,19 @@ composer require huijiewei/yii2-upload
     'upload' => [
         'class' => \huijiewei\upload\drivers\LocalFile::class,
         'path' => '文件上传的目录',
-        'action' => 'site/upload',
-        'cropAction' => 'site/image-crop'
-    ],
+        'action' => 'site/upload-file',
+        'cropAction' => 'site/crop-image'
+    ]
     
     // 根据上面的 action 配置，在对应的控制器里面增加
     
     public function actions()
     {
         return [
-            'upload' => [
+            'upload-file' => [
                 'class' => \huijiewei\upload\UploadAction::class,
             ],
-            'image-crop' => [
+            'crop-image' => [
                 'class' => \huijiewei\upload\ImageCropAction::class,
             ]
         ];
@@ -62,7 +62,7 @@ composer require huijiewei/yii2-upload
     \huijiewei\upload\widgets\ImageUploadWidget::widget([
         'name' => 'image',
         'value' => '',
-        'imageStyleName' => 'imageStyle1'
+        'imageStyleName' => '200x200' // 因为需要和本地切图兼容所以只支持 WxH 格式的样式名称
     ]);
 
 

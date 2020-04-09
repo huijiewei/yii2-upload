@@ -9,7 +9,7 @@ abstract class BaseUpload extends Component
 {
     public $supportImageCrop = false;
 
-    public function crop($policy, $file, $x, $y, $w, $h, &$error)
+    public function crop($policy, $file, $x, $y, $w, $h, $size, &$error)
     {
         $error = '本上传驱动不支持图片切割';
 

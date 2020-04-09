@@ -22,6 +22,7 @@ class ImageCropAction extends Action
             \Yii::$app->getRequest()->post('y'),
             \Yii::$app->getRequest()->post('w'),
             \Yii::$app->getRequest()->post('h'),
+            \Yii::$app->getRequest()->post('size', null),
             $error
         );
 

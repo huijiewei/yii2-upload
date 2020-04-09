@@ -50,7 +50,7 @@ class UploadWidget extends InputWidget
 
         $fileTypes = is_string($this->fileTypes) ? explode(',', $this->fileTypes) : $this->fileTypes;
 
-        $uploadBuilds = $this->uploadDriver->build($this->identity, $this->fileSize, $this->fileTypes, null, $this->cropImage ? true : false);
+        $uploadBuilds = $this->uploadDriver->build($this->identity, $this->fileSize, $this->fileTypes, !empty($this->imageStyleName) ? [$this->imageStyleName] : null, $this->cropImage ? true : false);
 
         $this->clientOptions = ArrayHelper::merge([
             'preview' => $this->preview ? true : false,
@@ -64,10 +64,7 @@ class UploadWidget extends InputWidget
                 new JsExpression('/(\.|\/)(' . implode('|', $fileTypes) . ')$/i') :
                 null,
             'acceptFileTypesMessage' => $this->fileTypesMessage . ' ' . implode(',', $fileTypes),
-            'imageProcess' => (!empty($this->imageStyleName) &&
-                isset($uploadBuilds['imageProcess']) &&
-                !empty($uploadBuilds['imageProcess']))
-                ? ($uploadBuilds['imageProcess'] . $this->imageStyleName) : '',
+            'imageStyleName' => $this->imageStyleName,
             'responseParse' => new JsExpression('function (result) { ' . $uploadBuilds['responseParse'] . '}'),
             'uploadHeaders' => $uploadBuilds['headers'],
             'uploadFormData' => $uploadBuilds['params'],

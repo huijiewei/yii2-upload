@@ -3,6 +3,7 @@
 namespace huijiewei\upload\drivers;
 
 use huijiewei\upload\BaseUpload;
+use Imagine\Image\Box;
 use yii\base\InvalidArgumentException;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
@@ -201,7 +202,7 @@ class LocalFile extends BaseUpload
         return 'm' . date('Ym', strtotime('now'));
     }
 
-    public function crop($policy, $file, $x, $y, $w, $h, &$error)
+    public function crop($policy, $file, $x, $y, $w, $h, $size, &$error)
     {
         $policy = $this->parsePolicy($policy);
 
@@ -246,7 +247,13 @@ class LocalFile extends BaseUpload
         $cropFileUrl = $uploadUrl . '/' . $cropFileName;
         $cropFilePath = $uploadPath . DIRECTORY_SEPARATOR . $cropFileName;
 
-        Image::crop($filePath, $w, $h, [$x, $y])->save($cropFilePath);
+        $image = Image::crop($filePath, $w, $h, [$x, $y]);
+
+        if (is_array($size) && count($size) == 2) {
+            $image->resize(new Box($size[0] * 2, $size[1] * 2));
+        }
+
+        $image->save($cropFilePath);
 
         $result = [
             'original' => $cropFileUrl,

@@ -30,11 +30,5 @@
     "psr-4": {
       "huijiewei\\upload\\": "src"
     }
-  },
-  "repositories": {
-    "asset": {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
   }
 }

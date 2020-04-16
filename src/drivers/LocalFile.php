@@ -43,6 +43,10 @@ class LocalFile extends BaseUpload
     {
         $policy = $this->parsePolicy($policy);
 
+        if ($policy == false) {
+            return false;
+        }
+
         $identity = $policy['identity'];
         $size = $policy['size'];
         $types = $policy['types'];
@@ -152,18 +156,22 @@ class LocalFile extends BaseUpload
         return $result;
     }
 
-    private function parsePolicy($policy)
+    private function parsePolicy($policy, &$error)
     {
         $policies = explode(';', \Yii::$app->getSecurity()->decryptByKey($policy, $this->policyKey));
 
         if (count($policies) != 6) {
-            throw new InvalidArgumentException('策略验证错误');
+            $error = '策略验证错误';
+
+            return false;
         }
 
         $timestamp = intval($policies[1]);
 
         if ($timestamp < time()) {
-            throw new InvalidArgumentException('参数已过期');
+            $error = '参数已过期';
+
+            return false;
         }
 
         return [
@@ -204,7 +212,11 @@ class LocalFile extends BaseUpload
 
     public function crop($policy, $file, $x, $y, $w, $h, $size, &$error)
     {
-        $policy = $this->parsePolicy($policy);
+        $policy = $this->parsePolicy($policy, $error);
+
+        if ($policy == false) {
+            return false;
+        }
 
         $identity = $policy['identity'];
         $thumbs = $policy['thumbs'];
@@ -300,6 +312,7 @@ class LocalFile extends BaseUpload
         return [
             'url' => Url::toRoute([$this->uploadAction, 'policy' => $policy], true),
             'cropUrl' => Url::toRoute([$this->cropAction, 'policy' => $policy], true),
+            'timeout' => 9 * 60,
             'params' => [],
             'headers' => [],
             'dataType' => 'json',

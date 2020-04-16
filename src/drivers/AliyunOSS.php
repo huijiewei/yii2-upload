@@ -49,7 +49,7 @@ class AliyunOSS extends BaseUpload
         $directory = rtrim($this->folder, '/') . '/' . date('Ym') . '/';
 
         $policy = [
-            'expiration' => date('Y-m-d') . 'T' . date('H:i:s', time() + (60 * 20)) . 'Z',
+            'expiration' => date('Y-m-d') . 'T' . date('H:i:s', time() + (60 * 10)) . 'Z',
             'conditions' => [
                 ['content-length-range', 0, $size],
                 ['starts-with', '$key', $directory]

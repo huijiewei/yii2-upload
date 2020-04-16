@@ -106,6 +106,7 @@ class TencentCOS extends BaseUpload
 
         return [
             'url' => $url,
+            'timeout' => 19 * 60,
             'params' => $params,
             'headers' => [
                 'Authorization' => $authorization,

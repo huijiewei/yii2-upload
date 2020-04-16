@@ -98,6 +98,7 @@ class Qiniu extends BaseUpload
 
         return [
             'url' => $url,
+            'timeout' => 19 * 60,
             'params' => $params,
             'headers' => [],
             'dataType' => 'json',

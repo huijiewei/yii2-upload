@@ -41,7 +41,7 @@ class LocalFile extends BaseUpload
 
     public function upload($policy, $file, &$error)
     {
-        $policy = $this->parsePolicy($policy);
+        $policy = $this->parsePolicy($policy, $error);
 
         if ($policy == false) {
             return false;

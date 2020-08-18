@@ -4,7 +4,7 @@
 (function ($) {
     "use strict";
 
-    $.uploadWidget = function (id, options) {
+    $.uploadWidget = function (id, options, uploadSucceed) {
         var upload = $('#' + id);
         var widget = upload.closest('.upload-widget');
         var button = upload.closest('.fileinput-button');
@@ -48,7 +48,7 @@
             data.submit();
         };
 
-        function addItem(url, preview, widget, inputName) {
+        function addItem(url, preview, widget, inputName, uploadSucceed) {
             var filename = url.split('/').pop().split('#').shift().split('?').shift();
 
             var widgetEmpty = widget.find('li:last');
@@ -70,6 +70,10 @@
 
             widgetItem.find('input').val(url);
             widgetItem.removeClass('upload-widget-empty');
+
+            if (uploadSucceed && uploadSucceed != null && $.isFunction(uploadSucceed)) {
+                uploadSucceed({file: filename, url: url});
+            }
         }
 
         upload.fileupload(fileUploadOptions)
@@ -110,7 +114,7 @@
 
                 if (options.cropImageOptions) {
                     $.imageCrop(result.original, options.cropImageOptions, function (req) {
-                        addItem(req.original, options.preview, widget, options.inputName)
+                        addItem(req.original, options.preview, widget, options.inputName, uploadSucceed)
                     });
                 } else {
                     var url = result.original;
@@ -124,7 +128,7 @@
                         }
                     }
 
-                    addItem(url, options.preview, widget, options.inputName)
+                    addItem(url, options.preview, widget, options.inputName, uploadSucceed)
                 }
             })
             .bind('fileuploadfail', function (e, data) {

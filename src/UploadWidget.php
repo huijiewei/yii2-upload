@@ -36,6 +36,8 @@ class UploadWidget extends InputWidget
     /* @var $uploadDriver BaseUpload */
     public $uploadDriver = 'upload';
 
+    public $uploadSucceed = 'null';
+
     public function init()
     {
         parent::init();
@@ -99,7 +101,7 @@ class UploadWidget extends InputWidget
         $clientOptions = Json::encode($this->clientOptions);
 
         $this->getView()->registerJs(
-            "$.uploadWidget('$this->id',  $clientOptions)"
+            "$.uploadWidget('$this->id',  $clientOptions, $this->uploadSucceed)"
         );
     }
 

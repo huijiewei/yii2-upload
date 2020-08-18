@@ -18,7 +18,7 @@ composer require huijiewei/yii2-upload
     'upload' => [
         'class' => \huijiewei\upload\drivers\LocalFile::class,
         'path' => '文件上传的目录',
-        'action' => 'site/upload-file',
+        'uploadAction' => 'site/upload-file',
         'cropAction' => 'site/crop-image'
     ]
     

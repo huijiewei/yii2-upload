@@ -311,7 +311,7 @@ class LocalFile extends BaseUpload
 
         return [
             'url' => Url::toRoute([$this->uploadAction, 'policy' => $policy], true),
-            'cropUrl' => Url::toRoute([$this->cropAction, 'policy' => $policy], true),
+            'cropUrl' => $cropper ? Url::toRoute([$this->cropAction, 'policy' => $policy], true) : null,
             'timeout' => 9 * 60,
             'params' => [],
             'headers' => [],

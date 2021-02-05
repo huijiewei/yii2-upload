@@ -13,6 +13,8 @@ class BlueimpFileUploadAsset extends AssetBundle
         'js/vendor/jquery.ui.widget.js',
         'js/jquery.iframe-transport.js',
         'js/jquery.fileupload.js',
+        'js/jquery.fileupload-process.js',
+        'js/jquery.fileupload-image.js',
     ];
 
     public $css = [
@@ -21,5 +23,7 @@ class BlueimpFileUploadAsset extends AssetBundle
 
     public $depends = [
         JqueryAsset::class,
+        BlueimpCanvasToBlobAsset::class,
+        BlueimpLoadImageAsset::class,
     ];
 }

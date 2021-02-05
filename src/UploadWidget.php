@@ -22,7 +22,7 @@ class UploadWidget extends InputWidget
 
     public $clientOptions = [];
 
-    public $fileSize = 1024 * 1024;
+    public $fileSize = 2 * 1024 * 1024;
     public $fileTypes = ['jpg', 'jpeg', 'png', 'gif', 'zip', 'doc', 'docx', 'pdf', 'xls', 'xlsx', 'ppt', 'pptx'];
 
     public $fileSizeMessage = '文件大小限制:';
@@ -37,6 +37,8 @@ class UploadWidget extends InputWidget
     public $uploadDriver = 'upload';
 
     public $uploadSucceed = 'null';
+
+    public $disableImageResize = true;
 
     public function init()
     {
@@ -78,6 +80,7 @@ class UploadWidget extends InputWidget
                 'dataType' => $uploadBuilds['dataType'],
                 'paramName' => $uploadBuilds['paramName'],
                 'singleFileUploads' => true,
+                'disableImageResize' => $this->disableImageResize,
             ],
         ], $this->clientOptions);
 

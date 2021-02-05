@@ -23,7 +23,7 @@
     "yiisoft/yii2": "^2.0",
     "yiisoft/yii2-imagine": "^2.1",
     "yiisoft/yii2-bootstrap": "^2.0",
-    "npm-asset/blueimp-file-upload": "^9.22.0",
+    "npm-asset/blueimp-file-upload": "^10.31.0",
     "npm-asset/cropperjs": "^1.5"
   },
   "autoload": {

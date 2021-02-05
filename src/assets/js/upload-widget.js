@@ -29,25 +29,6 @@
 
         var fileUploadOptions = options.fileUploadOptions;
 
-        fileUploadOptions.add = function (e, data) {
-            if (data.originalFiles[0]['size'] &&
-                data.originalFiles[0]['size'] > options.maxFileSize) {
-                button.notify(options.maxFileSizeMessage, 'error');
-
-                return;
-            }
-
-            if (options.acceptFileTypes &&
-                data.originalFiles[0]['type'].length &&
-                !options.acceptFileTypes.test(data.originalFiles[0]['name'])) {
-                button.notify(options.acceptFileTypesMessage, 'error');
-
-                return;
-            }
-
-            data.submit();
-        };
-
         function addItem(url, preview, widget, inputName, uploadSucceed) {
             var filename = url.split('/').pop().split('#').shift().split('?').shift();
 
@@ -78,6 +59,21 @@
 
         upload.fileupload(fileUploadOptions)
             .bind('fileuploadsubmit', function (e, data) {
+                if (data.files[0]['size'] &&
+                    data.files[0]['size'] > options.maxFileSize) {
+                    button.notify(options.maxFileSizeMessage, 'error');
+
+                    return false;
+                }
+
+                if (options.acceptFileTypes &&
+                    data.files[0]['type'].length &&
+                    !options.acceptFileTypes.test(data.files[0]['name'])) {
+                    button.notify(options.acceptFileTypesMessage, 'error');
+
+                    return false;
+                }
+
                 var formData = options.uploadFormData;
 
                 data.formData = data.formData == undefined ? {} : data.formData;

@@ -4,7 +4,7 @@
 (function ($) {
     "use strict";
 
-    $.uploadWidget = function (id, options, uploadSucceed) {
+    $.uploadWidget = function (id, options, uploadSucceed, uploadRemoved) {
         var upload = $('#' + id);
         var widget = upload.closest('.upload-widget');
         var button = upload.closest('.fileinput-button');
@@ -12,7 +12,12 @@
         widget.on('click', '.delete', function (event) {
             event.preventDefault();
 
-            var li = $(this).closest('li');
+            var del = $(this);
+
+            var li = del.closest('li');
+            var index = del.closest('ul').find('li').index(li);
+
+            var url = li.find('input').val();
 
             if (li.closest('ul').find('li').length === 1) {
                 li.find('.upload-widget-item').empty();
@@ -20,6 +25,10 @@
                 li.find('input').val('');
             } else {
                 li.remove();
+            }
+
+            if (uploadRemoved && $.isFunction(uploadRemoved)) {
+                uploadRemoved({url: url, index: index});
             }
         });
 
@@ -44,7 +53,7 @@
             }
 
             if (preview) {
-                widgetItem.find('.upload-widget-item').empty().html('<img src="' + url + '">')
+                widgetItem.find('.upload-widget-item').empty().html('<img alt="' + filename + '" src="' + url + '">')
             } else {
                 widgetItem.find('.upload-widget-item').html(filename)
             }
@@ -52,7 +61,7 @@
             widgetItem.find('input').val(url);
             widgetItem.removeClass('upload-widget-empty');
 
-            if (uploadSucceed && uploadSucceed != null && $.isFunction(uploadSucceed)) {
+            if (uploadSucceed && $.isFunction(uploadSucceed)) {
                 uploadSucceed({file: filename, url: url});
             }
         }

@@ -37,6 +37,7 @@ class UploadWidget extends InputWidget
     public $uploadDriver = 'upload';
 
     public $uploadSucceed = 'null';
+    public $uploadRemoved = 'null';
 
     public $disableImageResize = true;
 
@@ -104,7 +105,7 @@ class UploadWidget extends InputWidget
         $clientOptions = Json::encode($this->clientOptions);
 
         $this->getView()->registerJs(
-            "$.uploadWidget('$this->id',  $clientOptions, $this->uploadSucceed)"
+            "$.uploadWidget('$this->id',  $clientOptions, $this->uploadSucceed, $this->uploadRemoved)"
         );
     }
 

@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "php": "^7.1.3",
+    "php": ">=8.0.2",
     "ext-json": "*",
     "yiisoft/yii2": "^2.0",
     "yiisoft/yii2-imagine": "^2.1",
